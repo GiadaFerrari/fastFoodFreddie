@@ -10,14 +10,24 @@ let breathFrequency = 25;
 let rest = true;
 let randomInterval;
 let eyeY = 8.5;
+let bite = 0;
+let bite2 = 0;
+let bite3 = 0;
+let chips = document.querySelector('.chips');
+let chew = document.querySelector('.chew');
+let snore = document.querySelector('.snore');
 
 //BUTTONS
+let buttons = document.querySelector('div')
+
+let sleepBtn = document.querySelector('.sleep')
 let awakeBtn = document.querySelector('.awake');
 let smokeBtn = document.querySelector('.smoke');
 let eatBtn = document.querySelector('.eat');
 
 //STATES
 let awakeState = false;
+let eatState = false;
 
 
 
@@ -28,8 +38,14 @@ function setup() {
     frameRate(breathFrequency);
     strokeCap(ROUND)
     strokeJoin(ROUND);
+    //set vieport width to canvas width
+    document.body.style.width = width + "px";
+    buttons.style.width = width + "px";
 }
 //translate(width/2, height/3);
+
+
+
 
 function restJJ() {
     //if statement for breathing
@@ -57,12 +73,13 @@ function restJJ() {
 }
 
 function draw() {
-    randomInterval = Math.floor(random(1150));
+    // randomInterval = Math.floor(random(1150));
 
     //ANIMATE RESTING
     restJJ();
     //JUNKIE JOE
     function drawJJ() {
+
 
         background('#000000')
         noStroke();
@@ -142,28 +159,122 @@ function draw() {
 
     }
     drawJJ()
+    if (awakeState == false) {
+        snore.play();
+
+    }
     //WAKE HIM UP
-    if(awakeState == true){
-        console.log("I'm awake")
-        fill('#ffffff')
+
+    if (awakeState == true) {
+        snore.pause();
+
+        fill('#ffffff');
+        bubbleX = 0;
+        bubbleY = 0;
         stroke(0)
         strokeWeight(1);
-        ellipse(238, 80, 10, eyeY);
-        ellipse(262, 80, 10, eyeY);
-        strokeWeight(1);
-        point(238, 80);
-        point(262, 80);
+        ellipse(238, 82, 12, eyeY);
+        ellipse(262, 82, 12, eyeY);
+        strokeWeight(3);
+        point(238, 82);
+        point(262, 82);
 
-        }
-//randomly wake himup and let him go back to sleep
-
-    console.log(randomInterval);
-    if (randomInterval == 10) {
-        awakeState = true;
-
-        setTimeout(()=>{awakeState = false;
-                       eyeY = 10;},2500)
     }
 
+    if (eatState == true) {
+        awakeState = true;
+
+        chew.play();
+        chips.style.display = 'block';
+
+        noStroke();
+        fill(234, 22, 0);
+        triangle(270, bellyBreath - 50, 270, bellyBreath - 15, 300, bellyBreath - 20); //pizza base
+        strokeWeight(7);
+        stroke(234, 187, 0);
+        arc(284, bellyBreath - 20, 30, 5, 0, PI) //crust
+        noStroke();
+        fill('#FdFdFd');
+        ellipse(278, bellyBreath - 27, 7, 6); //mozzarella
+        ellipse(280, bellyBreath - 34, 4, 5); //mozzarella
+        ellipse(286, bellyBreath - 28, 4, 3); //mozzarella
+        ellipse(276, bellyBreath - 40, 5, 5); //mozzarella
+
+        fill(230)
+
+        eatPizza(270, bellyBreath - 50, bite) //bite 1
+
+        eatPizza(270, bellyBreath - 40, bite) //bite 2
+
+        eatPizza(270, bellyBreath - 30, bite) //bite 3
+
+
+        if (bite < 15) {
+            bite = 15;
+            console.log("eating")
+
+        }
+        if (bite == 15) {
+            bite2 = 15
+        }
+
+        if (bite == 15 && bite2 == 15) {
+            bite3 = 15;
+        }
+        chew.onended = () => {
+            chips.style.display = 'none';
+            eatState = false;
+            awakeState = false;
+
+        };
+    }
+
+    function eatPizza(x, y, d) {
+        noStroke();
+        fill(230);
+        ellipse(x, y, d, d)
+
+    }
+
+    /*
+        function eat() {
+            setTimeout(eatPizza(270, bellyBreath - 50, 10), 1000);
+            setTimeout(eatPizza(270, bellyBreath - 40, 15), 2000);
+            setTimeout(eatPizza(270, bellyBreath - 30, 15), 3000);
+            // setTimeout(eatPizza(280, bellyBreath - 35, 20), 2000);
+            //setTimeout(eatPizza(290, bellyBreath - 30, 20), 2500);
+            //setTimeout(eatPizza(300, bellyBreath - 30, 20), 3000);
+
+        }
+*/
+
+    //randomly wake himup and let him go back to sleep
+    if (randomInterval == 10) {
+        awakeState = true //set to true
+
+        setTimeout(() => {
+            awakeState = false; //set back to false
+            eyeY = 10;
+        }, 2500)
+    }
+    if (randomInterval == 20) {
+        eatState = true
+    }
+
+
+
+    //set event listeners
+
+    sleepBtn.addEventListener("click", () => {
+        awakeState = false;
+        eatState = false;
+    })
+
+    awakeBtn.addEventListener("click", () => {
+        awakeState = true;
+    })
+    eatBtn.addEventListener("click", () => {
+        eatState = true;
+    })
 
 }
