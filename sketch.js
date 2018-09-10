@@ -73,7 +73,7 @@ function restJJ() {
 }
 
 function draw() {
-    // randomInterval = Math.floor(random(1150));
+    randomInterval = Math.floor(random(550));
 
     //ANIMATE RESTING
     restJJ();
