@@ -18,9 +18,12 @@ let chew = document.querySelector('.chew');
 let snore = document.querySelector('.snore');
 let tvSound = document.querySelector('.tvSound')
 let lightValue = '#7d6b2d';
-
-//BACKGROUND
-let couch, lamp, tv, pizzas, halo, tvHalo;
+let switchTV = document.querySelector(".tv span");
+let x = 280;
+let y = 100;
+let d = 10;
+//IMAGES
+let couch, lamp, tv, pizzas, halo, tvHalo, pipe, smoke;
 
 //BUTTONS
 let buttons = document.querySelector('div');
@@ -35,6 +38,7 @@ let tvBtn = document.querySelector('.tv');
 let awakeState = false;
 let eatState = false;
 let tvState = false;
+let smokeState = false;
 
 function preload() {
     couch = loadImage("assets/illustration-couch.png")
@@ -43,6 +47,8 @@ function preload() {
     tv = loadImage("assets/tv.png")
     halo = loadImage("assets/halo.png")
     tvHalo = loadImage("assets/tv_halo.png")
+    pipe = loadImage("assets/pipe.png")
+    smoke = loadImage("assets/smoke.png")
 }
 
 function setup() {
@@ -99,6 +105,8 @@ function draw() {
         rect(0, 0, width, height - 460); //wall
         fill('#622b0a')
         rect(0, height - 460, width, 200); //floor
+        tint(255, 255);
+
         image(lamp, 10, 10, 70, 250);
         image(couch, 55, 146);
         image(tv, width - 90, 40, 120, 320);
@@ -183,13 +191,13 @@ function draw() {
     }
     drawJJ()
     if (awakeState == false) {
-        // snore.play();
+        snore.play();
         lightValue = '#7d6b2d';
 
 
 
     }
-    //WAKE HIM UP
+    //STATES
 
     if (awakeState == true) {
         snore.pause()
@@ -207,6 +215,7 @@ function draw() {
         if (tvState == false) {
             point(238, 82);
             point(262, 82);
+
 
         } else {
             point(242, 84);
@@ -263,19 +272,38 @@ function draw() {
     }
 
     if (tvState == true) {
+
         awakeState = true;
-        tvSound.volume = 0.2
+        tvSound.volume = 0.2;
         tvSound.play();
+
+        switchTV.textContent = 'OFF';
+
 
         image(tvHalo, width - 130, 110, 60, 115)
 
         tvBtn.addEventListener("click", () => {
             tvState = false;
+            switchTV.textContent = 'ON'
             tvSound.pause();
 
 
         })
 
+    } else {
+        tvSound.pause();
+        switchTV.textContent = 'ON'
+
+    }
+    if (smokeState == true) {
+        awakeState = true;
+        image(pipe, 250, 80, 50, 60);
+        smoking();
+
+        image(smoke, x, y, d, d)
+        setTimeout(() => {
+            smokeState = false
+        }, 3500)
     }
 
     function eatPizza(x, y, d) {
@@ -284,18 +312,6 @@ function draw() {
         ellipse(x, y, d, d)
 
     }
-
-    /*
-        function eat() {
-            setTimeout(eatPizza(270, bellyBreath - 50, 10), 1000);
-            setTimeout(eatPizza(270, bellyBreath - 40, 15), 2000);
-            setTimeout(eatPizza(270, bellyBreath - 30, 15), 3000);
-            // setTimeout(eatPizza(280, bellyBreath - 35, 20), 2000);
-            //setTimeout(eatPizza(290, bellyBreath - 30, 20), 2500);
-            //setTimeout(eatPizza(300, bellyBreath - 30, 20), 3000);
-
-        }
-*/
 
     //randomly wake himup and let him go back to sleep
     if (randomInterval == 10) {
@@ -335,5 +351,33 @@ function draw() {
 
         })
     }
+
+    if (smokeState == false) {
+
+        smokeBtn.addEventListener("click", () => {
+            smokeState = true;
+
+
+
+        })
+    }
+
+}
+
+function smoking() {
+
+    if (d < 50) {
+        d++;
+        y--;
+        x++;
+    } else {
+        tint(0, 0);
+        image(smoke, x, y, d, d);
+        d = 10;
+        y = 100;
+        x = 280;
+
+    }
+
 
 }
