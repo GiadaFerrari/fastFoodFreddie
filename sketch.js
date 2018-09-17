@@ -16,20 +16,34 @@ let bite3 = 0;
 let chips = document.querySelector('.chips');
 let chew = document.querySelector('.chew');
 let snore = document.querySelector('.snore');
+let tvSound = document.querySelector('.tvSound')
+let lightValue = '#7d6b2d';
+
+//BACKGROUND
+let couch, lamp, tv, pizzas, halo, tvHalo;
 
 //BUTTONS
-let buttons = document.querySelector('div')
+let buttons = document.querySelector('div');
 
-let sleepBtn = document.querySelector('.sleep')
+let sleepBtn = document.querySelector('.sleep');
 let awakeBtn = document.querySelector('.awake');
 let smokeBtn = document.querySelector('.smoke');
 let eatBtn = document.querySelector('.eat');
+let tvBtn = document.querySelector('.tv');
 
 //STATES
 let awakeState = false;
 let eatState = false;
+let tvState = false;
 
-
+function preload() {
+    couch = loadImage("assets/illustration-couch.png")
+    lamp = loadImage("assets/lamp.png")
+    pizzas = loadImage("assets/pizza_boxes.png")
+    tv = loadImage("assets/tv.png")
+    halo = loadImage("assets/halo.png")
+    tvHalo = loadImage("assets/tv_halo.png")
+}
 
 function setup() {
     createCanvas(500, 700);
@@ -42,7 +56,6 @@ function setup() {
     document.body.style.width = width + "px";
     buttons.style.width = width + "px";
 }
-//translate(width/2, height/3);
 
 
 
@@ -73,15 +86,25 @@ function restJJ() {
 }
 
 function draw() {
-    randomInterval = Math.floor(random(550));
+    randomInterval = Math.floor(random(11550));
 
     //ANIMATE RESTING
     restJJ();
     //JUNKIE JOE
     function drawJJ() {
+        //BACKGROUND
+
+        fill(lightValue);
+        noStroke();
+        rect(0, 0, width, height - 460); //wall
+        fill('#622b0a')
+        rect(0, height - 460, width, 200); //floor
+        image(lamp, 10, 10, 70, 250);
+        image(couch, 55, 146);
+        image(tv, width - 90, 40, 120, 320);
+        image(pizzas, 40, 250, 220, 170);
 
 
-        background('#000000')
         noStroke();
         fill('#fdc9ba');
         ellipse(250, 100, 70, 80); //head
@@ -160,13 +183,18 @@ function draw() {
     }
     drawJJ()
     if (awakeState == false) {
-        snore.play();
+        // snore.play();
+        lightValue = '#7d6b2d';
+
+
 
     }
     //WAKE HIM UP
 
     if (awakeState == true) {
-        snore.pause();
+        snore.pause()
+        lightValue = '#fde9a5';
+        image(halo, 7, 70, 70, 30);
 
         fill('#ffffff');
         bubbleX = 0;
@@ -176,9 +204,14 @@ function draw() {
         ellipse(238, 82, 12, eyeY);
         ellipse(262, 82, 12, eyeY);
         strokeWeight(3);
-        point(238, 82);
-        point(262, 82);
+        if (tvState == false) {
+            point(238, 82);
+            point(262, 82);
 
+        } else {
+            point(242, 84);
+            point(266, 84);
+        }
     }
 
     if (eatState == true) {
@@ -229,6 +262,22 @@ function draw() {
         };
     }
 
+    if (tvState == true) {
+        awakeState = true;
+        tvSound.volume = 0.2
+        tvSound.play();
+
+        image(tvHalo, width - 130, 110, 60, 115)
+
+        tvBtn.addEventListener("click", () => {
+            tvState = false;
+            tvSound.pause();
+
+
+        })
+
+    }
+
     function eatPizza(x, y, d) {
         noStroke();
         fill(230);
@@ -268,6 +317,7 @@ function draw() {
     sleepBtn.addEventListener("click", () => {
         awakeState = false;
         eatState = false;
+        tvState = false;
     })
 
     awakeBtn.addEventListener("click", () => {
@@ -276,5 +326,14 @@ function draw() {
     eatBtn.addEventListener("click", () => {
         eatState = true;
     })
+
+    if (tvState == false) {
+
+        tvBtn.addEventListener("click", () => {
+            tvState = true;
+
+
+        })
+    }
 
 }
